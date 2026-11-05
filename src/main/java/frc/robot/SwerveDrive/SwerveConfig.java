@@ -69,10 +69,10 @@ public class SwerveConfig {
     //MOTORS DRIVE
 
     // OFFSETS DOS CANCODERS
-    public final double offsetFL = 240.55668;
-    public final double offsetFR = 115.13664;
-    public final double offsetBL = 225.08784;
-    public final double offsetBR = 148.88664;
+    public final double offsetFL = 276.41592;
+    public final double offsetFR = 92.0214;
+    public final double offsetBL = 108.72072;
+    public final double offsetBR = 101.7774;
 
     //========================
     // CONTROLES

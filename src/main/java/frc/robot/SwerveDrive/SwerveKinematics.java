@@ -212,7 +212,7 @@ public class SwerveKinematics {
 
                 vy =
                 MathUtil.applyDeadband(
-                        controls.Get_LeftX(),
+                        -controls.Get_LeftX(),
                         DEADBAND
                 );
                 omega =
@@ -250,7 +250,6 @@ public class SwerveKinematics {
         //Invert
         // vx = vx * -1;
         // vy = vy * -1;
-        omega = omega * -1;
         //Invert
 
 
@@ -595,7 +594,7 @@ public class SwerveKinematics {
         swerveConfig.drive_motorFL.set(speedFL);
         swerveConfig.drive_motorFR.set(speedFR);
         swerveConfig.drive_motorBL.set(speedBL);
-        swerveConfig.drive_motorBR.set(speedBR);
+        swerveConfig.drive_motorBR.set(-speedBR);
 
 
         // ========================================================
