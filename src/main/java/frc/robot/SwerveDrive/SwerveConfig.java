@@ -73,6 +73,7 @@ public class SwerveConfig {
     public final double offsetFR = 92.0214;
     public final double offsetBL = 108.72072;
     public final double offsetBR = 101.7774;
+    
 
     //========================
     // CONTROLES

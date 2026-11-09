@@ -61,43 +61,35 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
+  // TESTE GARRA 
   private void configureBindings() {
-    m_driverController.rightTrigger().whileTrue(
 
-    Commands.runEnd(
+    // BOTÃO A: COLETA
+    m_driverController.a().onTrue(
+        Commands.runOnce(
+            () -> garra.setMotor(-0.3),
+            garra
+        )
+    );
 
-        () -> garra.setMotor(
-                m_driverController.getRightTriggerAxis()
-        ),
+    // BOTÃO B: DEPÓSITO
+    m_driverController.b().onTrue(
+        Commands.runOnce(
+            () -> garra.setMotor(0.3),
+            garra
+        )
+    );
 
-        () -> garra.stopMotor(),
-
-        garra
-    )
-);
-    // m_driverController.getRightTriggerAxis().whileTrue(new Command(Commands.runOnce(() -> garra.setMotor())));
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    //new Trigger(m_exampleSubsystem::exampleCondition)
-        //.onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    // m_driverController.a().onTrue(new Command(Commands.runOnce(()-> intakeSubsystem.SetVel_Colet(0.1))));
-      // m_driverController.rightBumper().onTrue(new CommandTurret());
-
-
-      // m_driverController.rightBumper().toggleOnTrue(new CommandIntake(-10, 1));
-      // m_driverController.rightTrigger().whileTrue(new CommandTurret());
-      
-
-    
-  }
-   private void activateCommandOnCondition(BooleanSupplier condition, Command command) {
-    new Trigger(condition).onTrue(command);
-  }
-
-  /**
+    // BOTÃO X: PARAR
+    m_driverController.x().onTrue(
+        Commands.runOnce(
+            () -> garra.stopMotor(),
+            garra
+        )
+    );
+}
+   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
