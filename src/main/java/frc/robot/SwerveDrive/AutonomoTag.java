@@ -1,175 +1,175 @@
 
-package frc.robot.SwerveDrive;
+// package frc.robot.SwerveDrive;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.LimelightHelpers;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import frc.robot.LimelightHelpers;
 
-public class AutonomoTag {
+// public class AutonomoTag {
 
-    // ============================================================
-    // APRILTAG YAW
-    // ============================================================
+//     // ============================================================
+//     // APRILTAG YAW
+//     // ============================================================
 
-    // Classe responsável pelo cálculo do alinhamento através do TX
-    private final AprilTagYaw aprilTagYaw =
-            new AprilTagYaw("limelight");
+//     // Classe responsável pelo cálculo do alinhamento através do TX
+//     private final AprilTagYaw aprilTagYaw =
+//             new AprilTagYaw("limelight");
 
-    // Velocidade de rotação utilizada para procurar a AprilTag
-    private static final double PROCURA_OMEGA = 0.40;
+//     // Velocidade de rotação utilizada para procurar a AprilTag
+//     private static final double PROCURA_OMEGA = 0.40;
 
 
-    // ============================================================
-    // ALTURAS
-    // ============================================================
+//     // ============================================================
+//     // ALTURAS
+//     // ============================================================
 
-    // Altura da AprilTag em metros
+//     // Altura da AprilTag em metros
     
-    private double altTag = 0.385;
+//     private double altTag = 0.385;
 
-    // Altura da câmera em metros
-    private double altCam = 0.520;
+//     // Altura da câmera em metros
+//     private double altCam = 0.520;
 
-    // Diferença entre as alturas
-    private double deltaAlt = altTag - altCam;
-
-
-    // ============================================================
-    // DISTÂNCIA
-    // ============================================================
-
-    // Distância calculada entre a câmera e a AprilTag
-    private double distance = 0;
-
-    // Distância desejada até a AprilTag
-    private double distanceDesejada = 0;
+//     // Diferença entre as alturas
+//     private double deltaAlt = altTag - altCam;
 
 
-    // ============================================================
-    // CONSTRUTOR
-    // ============================================================
+//     // ============================================================
+//     // DISTÂNCIA
+//     // ============================================================
 
-    public AutonomoTag() {
+//     // Distância calculada entre a câmera e a AprilTag
+//     private double distance = 0;
 
-    }
-
-
-    // ============================================================
-    // CONTROLE DE ALINHAMENTO
-    // ============================================================
-
-    public double getOmega() {
-
-        // Verifica se a Limelight está detectando uma AprilTag
-        if (aprilTagYaw.hasTarget()) {
-
-            // Retorna a velocidade angular calculada pelo controle
-            return -aprilTagYaw.getOmega();
-
-        } else {
-
-            // Procura a AprilTag quando ela não está visível
-            return PROCURA_OMEGA;
-        }
-    }
+//     // Distância desejada até a AprilTag
+//     private double distanceDesejada = 0;
 
 
-    // ============================================================
-    // DISTÂNCIA DA APRILTAG
-    // ============================================================
+//     // ============================================================
+//     // CONSTRUTOR
+//     // ============================================================
 
-    public double Distance() {
+//     public AutonomoTag() {
 
-        // Ângulo vertical entre a câmera e a AprilTag
-        double TyCam = LimelightHelpers.getTY("limelight");
-
-
-        // Se não existe uma AprilTag detectada, retorna zero
-        if (!aprilTagYaw.hasTarget()) {
-
-            distance = 0;
-
-            return distance;
-        }
+//     }
 
 
-        // Converte o ângulo de graus para radianos
-        double anguloTotal = Math.toRadians(TyCam);
+//     // ============================================================
+//     // CONTROLE DE ALINHAMENTO
+//     // ============================================================
+
+//     public double getOmega() {
+
+//         // Verifica se a Limelight está detectando uma AprilTag
+//         if (aprilTagYaw.hasTarget()) {
+
+//             // Retorna a velocidade angular calculada pelo controle
+//             return -aprilTagYaw.getOmega();
+
+//         } else {
+
+//             // Procura a AprilTag quando ela não está visível
+//             return PROCURA_OMEGA;
+//         }
+//     }
 
 
-        // Evita divisão por um valor muito próximo de zero
-        if (Math.abs(Math.tan(anguloTotal)) < 0.001) {
+//     // ============================================================
+//     // DISTÂNCIA DA APRILTAG
+//     // ============================================================
 
-            distance = 0;
+//     public double Distance() {
 
-            return distance;
-        }
-
-
-        // Calcula a distância através da diferença de alturas
-        distance = deltaAlt / Math.tan(anguloTotal);
+//         // Ângulo vertical entre a câmera e a AprilTag
+//         double TyCam = LimelightHelpers.getTY("limelight");
 
 
-        // Calibração da distância Apriltag
-        distance = 1.0222 * distance - 0.1497;
+//         // Se não existe uma AprilTag detectada, retorna zero
+//         if (!aprilTagYaw.hasTarget()) {
+
+//             distance = 0;
+
+//             return distance;
+//         }
 
 
-        return distance;
-    }
+//         // Converte o ângulo de graus para radianos
+//         double anguloTotal = Math.toRadians(TyCam);
 
 
-    // ============================================================
-    //                      SMARTDASHBOARD
-    // ============================================================
+//         // Evita divisão por um valor muito próximo de zero
+//         if (Math.abs(Math.tan(anguloTotal)) < 0.001) {
 
-    public void dashboard() {
+//             distance = 0;
 
-        // Informa se a AprilTag está sendo detectada
-        SmartDashboard.putBoolean(
-                "Apriltag Detectada",
-                aprilTagYaw.hasTarget()
-        );
+//             return distance;
+//         }
 
 
-        // Ângulo horizontal da AprilTag
-        SmartDashboard.putNumber(
-                "Apriltag TX",
-                aprilTagYaw.getTX()
-        );
+//         // Calcula a distância através da diferença de alturas
+//         distance = deltaAlt / Math.tan(anguloTotal);
 
 
-        // Ângulo vertical da AprilTag
-        SmartDashboard.putNumber(
-                "AprilTag TY",
-                LimelightHelpers.getTY("limelight")
-        );
+//         // Calibração da distância Apriltag
+//         distance = 1.0222 * distance - 0.1497;
 
 
-        // Distância calculada até a AprilTag
-        SmartDashboard.putNumber(
-                "DISTANCE (m)",
-                Distance()
-        );
-    }
+//         return distance;
+//     }
 
 
-    // ============================================================
-    //                  VERIFICAÇÃO DA APRILTAG
-    // ============================================================
+//     // ============================================================
+//     //                      SMARTDASHBOARD
+//     // ============================================================
 
-    public boolean hasTarget() {
+//     public void dashboard() {
 
-        return aprilTagYaw.hasTarget();
-    }
+//         // Informa se a AprilTag está sendo detectada
+//         SmartDashboard.putBoolean(
+//                 "Apriltag Detectada",
+//                 aprilTagYaw.hasTarget()
+//         );
 
 
-    // ============================================================
-    //                      LEITURA DO TX
-    // ============================================================
+//         // Ângulo horizontal da AprilTag
+//         SmartDashboard.putNumber(
+//                 "Apriltag TX",
+//                 aprilTagYaw.getTX()
+//         );
 
-    public double getTX() {
 
-        return aprilTagYaw.getTX();
-    }
+//         // Ângulo vertical da AprilTag
+//         SmartDashboard.putNumber(
+//                 "AprilTag TY",
+//                 LimelightHelpers.getTY("limelight")
+//         );
 
-}
+
+//         // Distância calculada até a AprilTag
+//         SmartDashboard.putNumber(
+//                 "DISTANCE (m)",
+//                 Distance()
+//         );
+//     }
+
+
+//     // ============================================================
+//     //                  VERIFICAÇÃO DA APRILTAG
+//     // ============================================================
+
+//     public boolean hasTarget() {
+
+//         return aprilTagYaw.hasTarget();
+//     }
+
+
+//     // ============================================================
+//     //                      LEITURA DO TX
+//     // ============================================================
+
+//     public double getTX() {
+
+//         return aprilTagYaw.getTX();
+//     }
+
+// }
 

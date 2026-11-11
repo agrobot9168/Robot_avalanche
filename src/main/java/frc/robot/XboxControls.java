@@ -28,7 +28,7 @@ public class XboxControls {
             
         }
     
-        public final static double Get_RightTriggerAxisPressed() {
+        public final static double Get_RightTriggerAxis() {
             return m_controller.getRightTriggerAxis();
     }
 

@@ -12,7 +12,7 @@ public class SwerveKinematics {
     private SwerveConfig swerveConfig = new SwerveConfig();
     private final XboxControls controls = new XboxControls();
 
-    private final AutonomoTag autonomoTag = new AutonomoTag();
+    //private final AutonomoTag autonomoTag = new AutonomoTag();
 
     //private final AprilTagYaw aprilTagYaw = new AprilTagYaw("limelight");
     //private static final double PROCURA_OMEGA = 0.20;
@@ -129,7 +129,7 @@ public class SwerveKinematics {
 
         private double zeroYaw = 0;
 
-        private boolean alinhamentoApriltag = false;
+        //private boolean alinhamentoApriltag = false;
 
         private boolean driveRobotOriented = false;
         private boolean driveFieldOriented = true;
@@ -144,7 +144,7 @@ public class SwerveKinematics {
     // PERIODIC
     public void periodic() {
         
-        autonomoTag.dashboard();
+        //autonomoTag.dashboard();
         // SmartDashboard.putBoolean("Apriltag Detectada", autonomoTag.hasTarget());
         // SmartDashboard.putNumber("Apriltag TX", autonomoTag.getTX());
         // SmartDashboard.putNumber("AprilTag TY", LimelightHelpers.getTY("limelight"));
@@ -159,7 +159,7 @@ public class SwerveKinematics {
         vy = 0.0;
         omega = 0.0;
 
-        alinhamentoApriltag = controls.Get_RightBumper();
+        //alinhamentoApriltag = controls.Get_RightBumper();
         PrintsSwerveKnematics();
 
         // // ========================================================
@@ -173,14 +173,14 @@ public class SwerveKinematics {
         //  */
                 if(driveFieldOriented) {
 
-                if (alinhamentoApriltag) {
-                        omega = autonomoTag.getOmega();
+                // if (alinhamentoApriltag) {
+                //         omega = autonomoTag.getOmega();
                         
-                } else {
-                        omega = MathUtil.applyDeadband(
-                                controls.Get_RightX(), DEADBAND 
-                        ) * MAX_ANGULAR_SPEED;
-                }
+                // } else {
+                         omega = MathUtil.applyDeadband(
+                                 controls.Get_RightX(), DEADBAND 
+                         ) * MAX_ANGULAR_SPEED;
+                // }
                 
                 vx =
                 MathUtil.applyDeadband(
