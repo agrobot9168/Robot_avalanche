@@ -15,7 +15,7 @@ public class SwerveConfig {
     // =========================
     // Pigeon2.0
     // =========================
-    public final Pigeon2 pigeon2 = new Pigeon2(22);
+    public final Pigeon2 pigeon2 = new Pigeon2(13);
     // =========================
     // Pigeon2.0
     // =========================

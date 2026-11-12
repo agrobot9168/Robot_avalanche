@@ -30,7 +30,7 @@ public class HandSubsystem extends SubsystemBase {
 
     public HandSubsystem() {
 
-        hand = new TalonFXS(20);
+        hand = new TalonFXS(16);
 
         configHand = new TalonFXSConfiguration();
 

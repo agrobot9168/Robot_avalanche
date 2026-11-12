@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 //import frc.robot.commands.Autos;
 // import frc.robot.commands.CommandIntake;
 // import frc.robot.commands.CommandTurret;
@@ -24,6 +26,10 @@ import frc.robot.subsystems.HandSubsystem;
 public class RobotContainer {
   public final GarraSubsystem garra = new GarraSubsystem();
   public final HandSubsystem hand = new  HandSubsystem();
+  public static ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  public final ArmSubsystem arm = new ArmSubsystem();
+
+
   
 
 
@@ -84,6 +90,8 @@ public class RobotContainer {
             garra
         )
     );
+
+    // m_driverController.rightBumper().onTrue(Commands.runOnce(() -> elevatorSubsystem.setReference()));
     
 
 }

@@ -32,6 +32,10 @@ public class XboxControls {
             return m_controller.getRightTriggerAxis();
     }
 
+    public final static double Get_LeftTriggerAxis() {
+            return m_controller.getLeftTriggerAxis();
+    }
+
     public final boolean Get_RightBumper() {
         return m_controller.getRightBumper();
     }
