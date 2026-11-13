@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.SetPoseElevCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 //import frc.robot.commands.Autos;
@@ -91,8 +94,9 @@ public class RobotContainer {
         )
     );
 
-    // m_driverController.rightBumper().onTrue(Commands.runOnce(() -> elevatorSubsystem.setReference()));
-    
+
+    m_driverController.rightBumper().whileTrue(new SetPoseElevCommand(-0.3));
+    m_driverController.leftBumper().whileTrue(new SetPoseElevCommand(0.3));
 
 }
    /**
@@ -106,5 +110,9 @@ public class RobotContainer {
   //} public Command getAutonomousCommand() {
     return Commands.none();
 }
+
+  private void onCommandCondition(BooleanSupplier condition, Command command) {
+    new Trigger(condition).onTrue(command);
+  }
 }
 

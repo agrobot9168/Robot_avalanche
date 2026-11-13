@@ -27,6 +27,7 @@ public class GarraSubsystem extends SubsystemBase {
     //                  Ativar controle de posição para manter a referência
     //===========================================================================================
 
+    public double erro;
 
     // guardar a posição do motor
     private double posicaoSegurar = 0.0;
@@ -34,7 +35,7 @@ public class GarraSubsystem extends SubsystemBase {
     private final TalonFXS motorGarra;
 
     // referencia corrente no travamento
-    private double correnteReferencia = 25.0;
+    private double correnteReferencia = 35.0;
 
 
     // cria o controle com posição inicial igual a zero
@@ -43,11 +44,14 @@ public class GarraSubsystem extends SubsystemBase {
 
     // indica se o controle de posição deve estar ativo.
     private boolean mantendoPosicao = false;
+    private boolean mantendoPosicao2 = false;
 
     // incremento de correcao
     private double incrementoPosicao = -4;
 
     private boolean referenciaaDefinida = false;
+
+    public boolean seguraOk = false;
 
 
 
@@ -58,93 +62,54 @@ public class GarraSubsystem extends SubsystemBase {
 
         motorGarra = new TalonFXS(14);
 
-        // TalonFXSConfiguration configs =
-                // new TalonFXSConfiguration();
+        TalonFXSConfiguration configs =
+                new TalonFXSConfiguration();
 
-        // configs.Commutation.MotorArrangement =
-                // MotorArrangementValue.Minion_JST;
+        configs.Commutation.MotorArrangement =
+                MotorArrangementValue.Minion_JST;
 
-        // configs.Slot0.kP = 5;
-        // configs.Slot0.kI = 0.0;
-        // configs.Slot0.kD = 0.0;
+        configs.Slot0.kP = 5;
+        configs.Slot0.kI = 0.0;
+        configs.Slot0.kD = 0.0;
 
-        // // motorGarra.getConfigurator().apply(configs);
+         motorGarra.getConfigurator().apply(configs);
 
        
     }
 
-    // ========================================================================================
-    //                                CONTROLE  DO  MOTOR
-    // ========================================================================================
 
-    public void setMotor(double velocidade) {
-        
-        motorGarra.set(MathUtil.clamp(velocidade, -1.0, 1.0));
-        referenciaaDefinida = false;
-        
-    }
-
-    public void stopMotor() {
-        mantendoPosicao = false;
-        
-        motorGarra.set(0);
-    }
-
-    // =========================================================================================
-    //                              LEITURA  DE  CORRENTE
-    // =========================================================================================
-
-    public double getCurrent() {
-
-        return motorGarra
-                .getStatorCurrent()
-                .getValueAsDouble();
-    }
-    public double erro;
     // ====================================================================================
     //                                    PERIODIC
     // ====================================================================================
 
     @Override
-        public void periodic() {
+    public void periodic() {
 
-    double corrente = getCurrent();
+        double corrente = getCurrent();
 
-        // Se a corrente ultrapassar a desejada
-        // Registrar posição inicial
+
+        //Se a corrente ultrapassar a desejada
+        //Registrar posição inicial
         if (corrente >= correnteReferencia) {
                 erro = controleGarra.calculate(
-                getPosition(), (getPosition() + 2/360.0) 
+                getPosition(), (getPosition() - 8/360.0) 
                 
-            ) * -1 + getPosition();
+            ) + getPosition();
 
              motorGarra.setControl(  
          controlePosicao.withPosition( erro));
 
-//         posicaoSegurar = getPosition();
+        posicaoSegurar = getPosition();
 
-//         referenciaaDefinida = true;
-//         mantendoPosicao = true;
-}
-
-
-        // Correção de posição
-        // && corrente > correnteReferencia
-//         if (referenciaaDefinida) {
-
-//         posicaoSegurar += incrementoPosicao;
-//         referenciaaDefinida = false; 
-// }
+        mantendoPosicao = true;
+    }
 
 
-        // Manter a posição desejada
-//         if (mantendoPosicao) {
-//            double  graus = 5;
-//             double rotacao = graus / 360;
-//         motorGarra.setControl(  
-//         controlePosicao.withPosition(rotacao)
-//     );
-// }
+    if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() >= 280){
+        setMotor(0.3);
+    } else if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() <= 280) {
+        setMotor(0);
+    }
 
     SmartDashboard.putNumber("CORRENTE MOTOR FXS", corrente);
     SmartDashboard.putNumber("POSICAO GARRA", getPosition());
@@ -158,10 +123,39 @@ public class GarraSubsystem extends SubsystemBase {
      
 
     
+
+    // ========================================================================================
+    //                                CONTROLE  DO  MOTOR
+    // ========================================================================================
+
+    public void setMotor(double velocidade) {
+        
+        motorGarra.set(MathUtil.clamp(velocidade, -1.0, 1.0));
+        referenciaaDefinida = false;
+        if(velocidade < 0) mantendoPosicao = false;
+        
+    }
+
+    public void stopMotor() {
+        mantendoPosicao = false;
+        
+        setMotor(0);
+    }
+
+    // =========================================================================================
+    //                              LEITURA  DE  CORRENTE
+    // =========================================================================================
+
+    public double getCurrent() {
+
+        return motorGarra
+                .getStatorCurrent()
+                .getValueAsDouble();
+    }
+    
     //=======================================================
     //                   PEGAR POSIÇÃO
     //=======================================================
-
     public double getPosition() {
            
         return motorGarra.getPosition().getValueAsDouble();

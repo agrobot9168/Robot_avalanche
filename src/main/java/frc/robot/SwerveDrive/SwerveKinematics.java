@@ -38,7 +38,7 @@ public class SwerveKinematics {
     // CONFIGURAÇÕES
     // ============================================================
 
-    private static final double DEADBAND = 0.05;
+    private static final double DEADBAND = 0.08;
 
     // Velocidade angular máxima
     private static final double MAX_ANGULAR_SPEED = 1.0;

@@ -39,77 +39,77 @@ private final PIDController pidaArm;
  private final double correnteMAX = 40.0;
 
  // Limites mecânicos:
- private final double limiteMinGrausFisico = 106.4;
+ private final double limiteMinGrausFisico = 156.3;
 
- private final double limiteMaxgrausFisico = 259.5;
+ private final double limiteMaxgrausFisico = 294.7;
 
  // controle de posicao 
 
  private final MotionMagicVoltage controlePosicao = new MotionMagicVoltage(0);
 
  // encoder 
- private final DutyCycleEncoder encoderArm = new DutyCycleEncoder(9, 1, 0);
-
-// construtor
-
-public ArmSubsystem() {
-
-    pidaArm = new PIDController(0.01, 0.0, 0.0);
-
-    // pidaArm.setTolerance(1.0); 
-
-    motorArm = new TalonFX(15);
-
-    configArm = new TalonFXConfiguration();
-
-// limite corrente 
-    configArm.CurrentLimits.StatorCurrentLimit = correnteMAX;
-    configArm.CurrentLimits.StatorCurrentLimitEnable = true;
-
-
-// modo brake
-    configArm.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-
-// Pid interno 
-
-configArm.Slot0.kP = 0.5;
-configArm.Slot0.kI = 0.0;
-configArm.Slot0.kD = 0.0;
-
-// motion Magic
-
-configArm.MotionMagic.MotionMagicCruiseVelocity = 5.0;
-configArm.MotionMagic.MotionMagicAcceleration = 10.0;
-
-// envia configuracao ao controlador
-
-motorArm.getConfigurator().apply(configArm);
-
-}
-
-// conversao de posicao 
-
-public double getPosition_Arm() {
-
-double posicao = getEncoder_Arm();
-
-double graus = posicao * 360.0;
-
-return graus;
-
-}
-
-public double getEncoder_Arm() {
-    return encoderArm.get();
+ private final static DutyCycleEncoder encoderArm = new DutyCycleEncoder(9, 1, 0);
+ 
+ // construtor
+ 
+ public ArmSubsystem() {
+ 
+     pidaArm = new PIDController(0.01, 0.0, 0.001);
+ 
+     // pidaArm.setTolerance(1.0); 
+ 
+     motorArm = new TalonFX(15);
+ 
+     configArm = new TalonFXConfiguration();
+ 
+ // limite corrente 
+     configArm.CurrentLimits.StatorCurrentLimit = correnteMAX;
+     configArm.CurrentLimits.StatorCurrentLimitEnable = true;
+ 
+ 
+ // modo brake
+     configArm.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+ 
+ 
+ // Pid interno 
+ 
+ configArm.Slot0.kP = 0.5;
+ configArm.Slot0.kI = 0.0;
+ configArm.Slot0.kD = 0.0;
+ 
+ // motion Magic
+ 
+ configArm.MotionMagic.MotionMagicCruiseVelocity = 5.0;
+ configArm.MotionMagic.MotionMagicAcceleration = 10.0;
+ 
+ // envia configuracao ao controlador
+ 
+ motorArm.getConfigurator().apply(configArm);
+ 
+ }
+ 
+ // conversao de posicao 
+ 
+ public static double getPosition_Arm() {
+ 
+ double posicao = getEncoder_Arm();
+ 
+ double graus = posicao * 360.0;
+ 
+ return graus;
+ 
+ }
+ 
+ public static double getEncoder_Arm() {
+     return encoderArm.get();
 }
 
 public double pidOutput() {
      return pidaArm.calculate(getPosition_Arm(), map(XboxControls.Get_LeftTriggerAxis(), 
                                                         0,
                                                         1,
-                                                        limiteMinGrausFisico,
-                                                        limiteMaxgrausFisico));
+                                                        limiteMinGrausFisico + 2,
+                                                        limiteMaxgrausFisico - 2));
 }
  public void controlarArm() {
     double saidaPID = pidOutput();
@@ -133,6 +133,7 @@ public double pidOutput() {
 //     motorArm.setControl(
 //         controlePosicao.withPosition(rotacoes));
 // }
+
 
 
 //periodic

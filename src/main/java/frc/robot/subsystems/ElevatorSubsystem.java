@@ -25,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     private double kV = 12 / 5676.0;
 
     private static final double maxVelocity = 5000.0;
-    private static final double maxAceleration = 5600 * 2;
+    private static final double maxAceleration = 5600 * 1.5;
     private static final double aallowedPrrofileError = 0.1;
 
     public ElevatorSubsystem() {
@@ -57,6 +57,10 @@ public class ElevatorSubsystem extends SubsystemBase{
         pidElevator.setSetpoint(pose, ControlType.kMAXMotionPositionControl);
     }
 
+    public void setVel_Elev(double vel) {
+        mElevator.set(vel);
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Elev_Pose", getPose_Elev());
@@ -64,5 +68,14 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public void setReference() {
         elevatorEncoder.setPosition(0);
+    }
+
+    public boolean CanMove() {
+        return getPose_Elev() < 0 && getPose_Elev() >= -57; 
+    }
+
+    public void freeze() {
+        double freze = getPose_Elev();
+        setPose_Elev(freze);
     }
 }
