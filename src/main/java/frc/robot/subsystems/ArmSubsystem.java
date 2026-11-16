@@ -39,16 +39,16 @@ private final PIDController pidaArm;
  private final double correnteMAX = 40.0;
 
  // Limites mecânicos:
- private final double limiteMinGrausFisico = 156.3;
+ private final double limiteMinGrausFisico = 0.2;
 
- private final double limiteMaxgrausFisico = 294.7;
+ private final double limiteMaxgrausFisico = 131.7;
 
  // controle de posicao 
 
  private final MotionMagicVoltage controlePosicao = new MotionMagicVoltage(0);
 
  // encoder 
- private final static DutyCycleEncoder encoderArm = new DutyCycleEncoder(9, 1, 0);
+ private final static DutyCycleEncoder encoderArm = new DutyCycleEncoder(9, 1, 0.9415062735376568);
  
  // construtor
  
@@ -92,6 +92,8 @@ private final PIDController pidaArm;
  
  public static double getPosition_Arm() {
  
+
+
  double posicao = getEncoder_Arm();
  
  double graus = posicao * 360.0;
@@ -105,6 +107,17 @@ private final PIDController pidaArm;
 }
 
 public double pidOutput() {
+
+    double position;
+
+    // if ((getPosition_Arm() < 0.2) && ( getPosition_Arm() > 270.0)) {
+    //     position = 0.2;
+    // } else if ((getPosition_Arm() > 131.7) && (getPosition_Arm() <= 270.0)){
+    //     position = limiteMaxgrausFisico;
+    // } else {
+    //     //position = getPosition_Arm();
+    // }
+           
      return pidaArm.calculate(getPosition_Arm(), map(XboxControls.Get_LeftTriggerAxis(), 
                                                         0,
                                                         1,
@@ -142,7 +155,7 @@ public double pidOutput() {
 
 public void periodic() {
 
-controlarArm();
+ controlarArm();
 
 // botao
 

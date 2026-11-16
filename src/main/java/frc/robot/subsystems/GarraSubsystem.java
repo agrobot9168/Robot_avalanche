@@ -105,9 +105,9 @@ public class GarraSubsystem extends SubsystemBase {
     }
 
 
-    if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() >= 280){
+    if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() >= 110){
         setMotor(0.3);
-    } else if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() <= 280) {
+    } else if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() <= 110) {
         setMotor(0);
     }
 
@@ -161,6 +161,7 @@ public class GarraSubsystem extends SubsystemBase {
         return motorGarra.getPosition().getValueAsDouble();
         
     }
+ 
 
 }
 

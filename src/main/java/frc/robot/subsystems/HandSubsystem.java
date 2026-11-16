@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import frc.robot.subsystems.ArmSubsystem;
 
 public class HandSubsystem extends SubsystemBase {
 
@@ -77,6 +78,15 @@ public class HandSubsystem extends SubsystemBase {
         hand.set(velocidade);
     }
 
+     //estabiliza hand com o braço
+      public void estabilizaHand() {
+        
+          
+        
+
+      }
+
+
     @Override
     public void periodic() {
 
@@ -96,6 +106,7 @@ public class HandSubsystem extends SubsystemBase {
             hand.setControl(
                 controlePosicao.withPosition(referencia)
             );
+        
 
         SmartDashboard.putNumber("POSICAO DA HAND", getPosition_Hand());
 

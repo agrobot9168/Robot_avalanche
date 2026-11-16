@@ -8,10 +8,12 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase{
+    private boolean teste = false;
 
     private final SparkMax mElevator;
     private final SparkMaxConfig cfgElevator;
@@ -34,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         pidElevator = mElevator.getClosedLoopController();
         elevatorEncoder = mElevator.getEncoder();
 
-        elevatorEncoder.setPosition(0);
+        mElevator.getEncoder().setPosition(0);
 
         cfgElevator.inverted(false).idleMode(IdleMode.kBrake);
         cfgElevator.smartCurrentLimit(20);
@@ -50,11 +52,13 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public double getPose_Elev() {
-        return elevatorEncoder.getPosition();
+        return mElevator.getEncoder().getPosition();
     }
 
-    public void setPose_Elev(double pose) {
+    public void setPose_Elev(double pose )  {
+        pose = MathUtil.clamp(pose, -50, 0);
         pidElevator.setSetpoint(pose, ControlType.kMAXMotionPositionControl);
+        
     }
 
     public void setVel_Elev(double vel) {
@@ -63,15 +67,17 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+        teste = !teste;
         SmartDashboard.putNumber("Elev_Pose", getPose_Elev());
+        SmartDashboard.putBoolean("Elev_Vivo", teste);
     }
 
     public void setReference() {
-        elevatorEncoder.setPosition(0);
+        mElevator.getEncoder().setPosition(0);
     }
 
     public boolean CanMove() {
-        return getPose_Elev() < 0 && getPose_Elev() >= -57; 
+        return getPose_Elev() <= 0 && getPose_Elev() >= -53; 
     }
 
     public void freeze() {
