@@ -75,7 +75,7 @@ public class HandSubsystem extends SubsystemBase {
 
      //estabiliza hand com o braço
     public double estabilizaHand(double anguloArm) {
-        double newAnguloHand = anguloArm/16 - (77/16);
+        double newAnguloHand = anguloArm/16 - (67/16);
         return MathUtil.clamp(newAnguloHand, 0.0, 106.0);
     }
 
@@ -89,7 +89,7 @@ public class HandSubsystem extends SubsystemBase {
 
         double referencia;
 
-        if (ArmSubsystem.getPosition_Arm() > 20 && ArmSubsystem.coleta) {
+        if (ArmSubsystem.getPosition_Arm() > 20) {
 
             referencia = estabilizaHand(ArmSubsystem.getPosition_Arm());
 

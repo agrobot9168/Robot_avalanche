@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.SwerveDrive.FowardCinematica;
 import frc.robot.SwerveDrive.SwerveKinematics;
 import frc.robot.subsystems.HandSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +37,7 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   private final SwerveKinematics swerveAngle = new SwerveKinematics();
+  private final FowardCinematica fowardCinematica = new FowardCinematica();
   private final HandSubsystem joint = new HandSubsystem();
  // private final SwerveKinematics motorteste = new SwerveKinematics().Garrateste();
 
@@ -91,6 +93,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     swerveAngle.periodic();
+    fowardCinematica.Prints_FowardCinematicas();
     joint.periodic();
     //swerveAngle.PrintsSwerveKnematics();
 
