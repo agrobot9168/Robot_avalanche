@@ -47,7 +47,7 @@ public class HandSubsystem extends SubsystemBase {
         configHand.Slot0.kI = 0;
         configHand.Slot0.kD = 0;
         configHand.MotionMagic.MotionMagicCruiseVelocity = 20.0;
-        configHand.MotionMagic.MotionMagicAcceleration = 90.0;
+        configHand.MotionMagic.MotionMagicAcceleration = 50.0;
 
         hand.getConfigurator().apply(configHand);
 
@@ -56,20 +56,15 @@ public class HandSubsystem extends SubsystemBase {
 
     // travar posicao
     public void holdPosition() {
-
         double posicaoAtual = hand.getPosition().getValueAsDouble();
-
         hand.setControl(new PositionVoltage(posicaoAtual));
     }
 
     public double getPosition_Hand() {
-
         // le posicao do encoder em rotacoes
         double rotacoes = hand.getPosition().getValueAsDouble();
-
         // Converte a posição do motor para graus da articulação
         double graus = (rotacoes * 360.0) / 16.0;
-
         return graus;
     }
 
@@ -79,12 +74,10 @@ public class HandSubsystem extends SubsystemBase {
     }
 
      //estabiliza hand com o braço
-      public void estabilizaHand() {
-        
-          
-        
-
-      }
+    public double estabilizaHand(double anguloArm) {
+        double newAnguloHand = anguloArm/16 - (77/16);
+        return MathUtil.clamp(newAnguloHand, 0.0, 106.0);
+    }
 
 
     @Override
@@ -96,9 +89,10 @@ public class HandSubsystem extends SubsystemBase {
 
         double referencia;
 
-        if (gatilho > DEADBAND) {
+        if (ArmSubsystem.getPosition_Arm() > 20 && ArmSubsystem.coleta) {
 
-             referencia = gatilho * voltas;
+            referencia = estabilizaHand(ArmSubsystem.getPosition_Arm());
+
         } else {
 
             referencia = 0;

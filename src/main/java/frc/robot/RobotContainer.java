@@ -70,7 +70,7 @@ public class RobotContainer {
   // TESTE GARRA 
   private void configureBindings() {
 
-    // BOTÃO A: COLETA
+    // BOTÃO A: deposita 
     m_driverController.a().onTrue(
         Commands.runOnce(
             () -> garra.setMotor(-0.3),
@@ -78,16 +78,9 @@ public class RobotContainer {
         )
     );
 
-    // BOTÃO B: DEPÓSITO
-    m_driverController.b().onTrue(
-        Commands.runOnce(
-            () -> garra.setMotor(0.3),
-            garra
-        )
-    );
 
     // BOTÃO X: PARAR
-    m_driverController.x().onTrue(
+    m_driverController.b().onTrue(
         Commands.runOnce(
             () -> garra.stopMotor(),
             garra

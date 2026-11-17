@@ -38,7 +38,8 @@ public class SwerveKinematics {
     // CONFIGURAÇÕES
     // ============================================================
 
-    private static final double DEADBAND = 0.08;
+    private static final double DEADBAND = 0.02;
+    private static final double DEADBANDCONTROL = 0.08;
 
     // Velocidade angular máxima
     private static final double MAX_ANGULAR_SPEED = 1.0;
@@ -178,20 +179,20 @@ public class SwerveKinematics {
                         
                 // } else {
                          omega = MathUtil.applyDeadband(
-                                 controls.Get_RightX(), DEADBAND 
+                                 controls.Get_RightX(), DEADBANDCONTROL 
                          ) * MAX_ANGULAR_SPEED;
                 // }
                 
                 vx =
                 MathUtil.applyDeadband(
                         controls.Get_LeftY(),
-                        DEADBAND
+                        DEADBANDCONTROL
                 );
 
                 vy =
                 MathUtil.applyDeadband(
                         controls.Get_LeftX(),
-                        DEADBAND
+                        DEADBANDCONTROL
                 );
                 
 
@@ -207,18 +208,18 @@ public class SwerveKinematics {
                 vx =
                 MathUtil.applyDeadband(
                         controls.Get_LeftY(),
-                        DEADBAND
+                        DEADBANDCONTROL
                 );
 
                 vy =
                 MathUtil.applyDeadband(
                         -controls.Get_LeftX(),
-                        DEADBAND
+                        DEADBANDCONTROL
                 );
                 omega =
                 MathUtil.applyDeadband(
                         controls.Get_RightX(),
-                        DEADBAND
+                        DEADBANDCONTROL
                 ) * MAX_ANGULAR_SPEED;
                 }
         

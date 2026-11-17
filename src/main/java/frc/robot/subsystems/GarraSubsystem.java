@@ -45,6 +45,7 @@ public class GarraSubsystem extends SubsystemBase {
     // indica se o controle de posição deve estar ativo.
     private boolean mantendoPosicao = false;
     private boolean mantendoPosicao2 = false;
+    double anguloAtual;
 
     // incremento de correcao
     private double incrementoPosicao = -4;
@@ -64,6 +65,8 @@ public class GarraSubsystem extends SubsystemBase {
 
         TalonFXSConfiguration configs =
                 new TalonFXSConfiguration();
+
+        motorGarra.setPosition(0);
 
         configs.Commutation.MotorArrangement =
                 MotorArrangementValue.Minion_JST;
@@ -103,11 +106,12 @@ public class GarraSubsystem extends SubsystemBase {
 
         mantendoPosicao = true;
     }
+    anguloAtual = MathUtil.clamp(ArmSubsystem.getPosition_Arm(), 0.2, 110.0); 
 
 
-    if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() >= 110){
+    if(!mantendoPosicao && anguloAtual >= 110){
         setMotor(0.3);
-    } else if(!mantendoPosicao && ArmSubsystem.getPosition_Arm() <= 110) {
+    } else if(!mantendoPosicao && anguloAtual <= 110) {
         setMotor(0);
     }
 
@@ -118,6 +122,8 @@ public class GarraSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("MANTENDO POSICAO", mantendoPosicao);
     SmartDashboard.putBoolean("REFERENCIADEFINIDA", referenciaaDefinida);
     SmartDashboard.putNumber("ERRO", erro);
+
+    SmartDashboard.putNumber("ERRO_GARRA", erro);
 }
 
      
