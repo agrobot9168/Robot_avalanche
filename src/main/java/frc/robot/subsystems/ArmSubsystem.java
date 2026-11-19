@@ -51,18 +51,18 @@ private final PIDController pidaArm;
  private final double correnteMAX = 40.0;
 
  private final double l1Pose = 80;
- private final double l2Pose = 80;
+ private final double l2Pose = 120;
  private final double l3Pose = 80;
 
  // Limites mecânicos:
   private final double limiteMinGrausFisico = 0.2;
-  private final double limiteMaxgrausFisico = 140;
+  private final double limiteMaxgrausFisico = 145;
  
   // controle de posicao 
   private final MotionMagicVoltage controlePosicao = new MotionMagicVoltage(0);
  
   // encoder 
-  private final static DutyCycleEncoder encoderArm = new DutyCycleEncoder(9, 1, 0.9415790235394755);
+  private final static DutyCycleEncoder encoderArm = new DutyCycleEncoder(9, 1, 0.05562950139073754);
   
   // construtor
   public ArmSubsystem() {
@@ -171,7 +171,7 @@ public double pidOutput() {
     saidaPID = MathUtil.clamp(saidaPID, -0.6, 0.6); 
     SmartDashboard.putNumber("saidaPIDARMY", saidaPID);
 
-    motorArm.set(saidaPID);
+    motorArm.set( - saidaPID);
 }
 
 

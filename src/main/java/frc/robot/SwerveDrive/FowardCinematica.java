@@ -2,9 +2,11 @@
 package frc.robot.SwerveDrive;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FowardCinematica {
@@ -14,16 +16,35 @@ public class FowardCinematica {
     private static final double GEAR_RATIO = 4.67;
     private static final double WHEEL_DIAMETER = 0.1016;
 
+    private static final double L = 0.28128;
+    private static final double W = 0.28128;
+
+
+    private double positionX = 0;
+    private double positionY = 0;
+    private double positionTheta = 0;
+
+    private double previousVx = 0;
+    private double previousVy = 0;
+    private double previousOmega = 0;
+
+    private double previousTime;
+
+
     private static final double WHEEL_CIRCUMFERENCE =
         Math.PI * WHEEL_DIAMETER;
 
     private SwerveConfig swerveConfig = new SwerveConfig();
 
     public FowardCinematica() {
-
+        previousTime = Timer.getFPGATimestamp();
     }
 
     // Velocidade linear de cada roda (m/s)
+    public double getYaw (Pigeon2 pigeon) {
+        return pigeon.getYaw().getValueAsDouble();
+    }
+    
     public double getMPS(TalonFX motor) {
 
         double motorRPS =
@@ -65,6 +86,7 @@ public class FowardCinematica {
         return getAngle(swerveConfig.canBR, swerveConfig.offsetBR);
     }
 
+    // vel de cada modulo 
     double getVelFL() {
         return getMPS(swerveConfig.drive_motorFL);
     }
@@ -81,40 +103,116 @@ public class FowardCinematica {
         return getMPS(swerveConfig.drive_motorBR);
     }
 
+
     // ========================================================
         // COMPONENTES DE VELOCIDADE DE CADA RODA
         // ========================================================
-        private double[] fowardCinematica(){
-        double flVx = getVelFL() * Math.cos(getOrientationFL());
-        double flVy = getVelFL() * Math.sin(getOrientationFL());
+        private double[] fowardCinematica() {
+        // conversao dps angulos para radianos
+        double FLangle = Math.toRadians(getOrientationFL());
+        double FRangle = Math.toRadians(getOrientationFR());
+        double BLangle = Math.toRadians(getOrientationBL());
+        double BRangle = Math.toRadians(getOrientationBR());
 
-        double frVx = getVelFR() * Math.cos(getOrientationFR());
-        double frVy = getVelFR() * Math.sin(getOrientationFR());
 
-        double blVx = getVelBL() * Math.cos(getOrientationBL());
-        double blVy = getVelBL() * Math.sin(getOrientationBL());
+        // componentes de velocidade de cada roda 
+        double flVx = getVelFL() * Math.cos(FLangle);
+        double flVy = getVelFL() * Math.sin(FLangle);
 
-        double brVx = getVelBR() * Math.cos(getOrientationBR());
-        double brVy = getVelBR() * Math.sin(getOrientationBR());
+        double frVx = getVelFR() * Math.cos(FRangle);
+        double frVy = getVelFR() * Math.sin(FRangle);
 
+        double blVx = getVelBL() * Math.cos(BLangle);
+        double blVy = getVelBL() * Math.sin(BLangle);
+
+        double brVx = getVelBR() * Math.cos(BRangle);
+        double brVy = getVelBR() * Math.sin(BRangle);
+        
+        // VEL TRANSLACIONAL DO ROBO 
         double vx =
                 (flVx + frVx + blVx + brVx) / 4.0;
 
         double vy =
                 (flVy + frVy + blVy + brVy) / 4.0;
 
-        double omega = (
-                  (-flVx + flVy)
-                + ( frVx + frVy)
-                + (-blVx - blVy)
-                + ( brVx - brVy)
-        ) / (4.0 * (0.28128 + 0.28128));
+        // VEEL ANGULAR POR MINIMOS QUADRADROS 
+
+        double omegaNumerator = (
+                  (-W * flVx + L * flVy)
+                + ( W * frVx + L * frVy)
+                + (-W * blVx - L * blVy)
+                + ( W * brVx - L * brVy));
+        
+
+        double omegaDenominator = 4.0 * (L * L + W * W);
+
+        double omega = omegaNumerator / omegaDenominator;
 
         return new double[] {vx, vy, omega};
         }
 
-        
+    // integracao de posicao 
 
+    private void updatePosition(
+        double vxRobot,
+        double vyRobot,
+        double omega,
+        double yawDegrees) {
+
+        double currentTime = Timer.getFPGATimestamp();
+
+        double dt = currentTime - previousTime;
+
+        previousTime = currentTime;
+ 
+ 
+        if (dt <= 0 || dt >= 0.1) {
+            previousVx = vxRobot;
+            previousVy = vyRobot;
+            previousOmega = omega;
+
+            return;
+        }
+
+        // convercao do yaw para radianos 
+         
+        double yaw = Math.toRadians(yawDegrees);
+
+        // transformacao do referencial do robo para o campo
+
+        double vxField = 
+            vxRobot * Math.cos(yaw)
+          - vyRobot * Math.sin(yaw);
+
+        double vyField = 
+         vxRobot * Math.sin(yaw)
+        + vyRobot * Math.cos(yaw);
+
+        // integracao trapezoidal independente 
+
+        positionX += 
+            ((previousVxField(vxField) + vxField) / 2.0) * dt;
+        
+        positionY += 
+            ((previousVyField(vyField) + vyField) / 2.0) * dt;
+
+        positionTheta += 
+            ((previousOmega + omega ) / 2.0) * dt;
+
+        // atualizacao das velocidades anteriores 
+
+        previousVx = vxRobot;
+        previousVy = vyRobot;
+        previousOmega = omega;
+
+        previousVxField =  vxField;
+        previousVyField =  vyField;
+
+    }
+    
+    // evita integrecao com intervalos invaldos ou muito grandes 
+
+  
     public double GetPosition(double derivative) {
     Vf = derivative;
 
@@ -126,12 +224,29 @@ public class FowardCinematica {
     return positionF;
     }
 
+    // velocidades anteriores no referenfial do campo 
+
+    private double previousVxField = 0;
+    private double previousVyField = 0;
+
+    private double previousVxField(double current) {
+        return previousVxField;
+    }
+
+     private double previousVyField(double current) {
+        return previousVyField;
+    }
+    
+
     public void Prints_FowardCinematicas() {
         double[] cinematica = fowardCinematica();
 
         double vx_final = cinematica[0];
         double vy_final = cinematica[1];
         double omega_final = cinematica[2];
+
+        updatePosition(vx_final, vy_final, omega_final, getYaw(swerveConfig.pigeon2));
+
 
         SmartDashboard.putNumber("Swerve/VelocidadeDrive/FR", getVelFR());
         SmartDashboard.putNumber("Swerve/VelocidadeDrive/FL", getVelFL());
@@ -150,8 +265,8 @@ public class FowardCinematica {
         SmartDashboard.putNumber("Swerve/Robo/Vy", vy_final);
         SmartDashboard.putNumber("Swerve/Robo/Teta", omega_final);
 
-        SmartDashboard.putNumber("RobotPosition/X", GetPosition(vx_final));
-        SmartDashboard.putNumber("RobotPosition/Y", GetPosition(vy_final));
-        SmartDashboard.putNumber("RobotPosition/Omega", GetPosition(omega_final));
+        SmartDashboard.putNumber("RobotPosition/X", GetPosition(positionX));
+        SmartDashboard.putNumber("RobotPosition/Y", GetPosition(positionY));
+        SmartDashboard.putNumber("RobotPosition/Omega", GetPosition(positionTheta));
     }
 }

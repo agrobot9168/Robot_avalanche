@@ -17,6 +17,8 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class HandSubsystem extends SubsystemBase {
 
+    private double offsetHand = 95/16;
+
     // motor
     private final TalonFXS hand;
 
@@ -75,7 +77,7 @@ public class HandSubsystem extends SubsystemBase {
 
      //estabiliza hand com o braço
     public double estabilizaHand(double anguloArm) {
-        double newAnguloHand = anguloArm/16 - (67/16);
+        double newAnguloHand = anguloArm/16 - (offsetHand);
         return MathUtil.clamp(newAnguloHand, 0.0, 106.0);
     }
 
@@ -89,7 +91,7 @@ public class HandSubsystem extends SubsystemBase {
 
         double referencia;
 
-        if (ArmSubsystem.getPosition_Arm() > 20) {
+        if (ArmSubsystem.getPosition_Arm() > 20 && ArmSubsystem.coleta) {
 
             referencia = estabilizaHand(ArmSubsystem.getPosition_Arm());
 

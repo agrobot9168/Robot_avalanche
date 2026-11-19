@@ -21,13 +21,13 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     private final RelativeEncoder elevatorEncoder;
 
-    private double kP = 0.01;
+    private double kP = 2;
     private double kD = 0.0;
     private double kI = 0.0;
     private double kV = 12 / 5676.0;
 
-    private static final double maxVelocity = 5000.0;
-    private static final double maxAceleration = 5600 * 1.5;
+    private static final double maxVelocity = 5600.0;
+    private static final double maxAceleration = 5600 * 2;
     private static final double aallowedPrrofileError = 0.1;
 
     public ElevatorSubsystem() {
@@ -39,7 +39,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         mElevator.getEncoder().setPosition(0);
 
         cfgElevator.inverted(false).idleMode(IdleMode.kBrake);
-        cfgElevator.smartCurrentLimit(20);
+        cfgElevator.smartCurrentLimit(30);
         cfgElevator.closedLoop.p(kP).d(kD).i(kI);
         cfgElevator.closedLoop.feedForward.kV(kV);
         cfgElevator.closedLoop.maxMotion
@@ -51,12 +51,16 @@ public class ElevatorSubsystem extends SubsystemBase{
                                             com.revrobotics.PersistMode.kNoPersistParameters);
     }
 
+    public double getCurrent() {
+        return mElevator.getOutputCurrent();
+    }
+
     public double getPose_Elev() {
         return mElevator.getEncoder().getPosition();
     }
 
     public void setPose_Elev(double pose )  {
-        pose = MathUtil.clamp(pose, -50, 0);
+        pose = MathUtil.clamp(pose, -174, 0);
         pidElevator.setSetpoint(pose, ControlType.kMAXMotionPositionControl);
         
     }
@@ -70,6 +74,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         teste = !teste;
         SmartDashboard.putNumber("Elev_Pose", getPose_Elev());
         SmartDashboard.putBoolean("Elev_Vivo", teste);
+
+        SmartDashboard.putNumber("Current_Elev", getCurrent());
     }
 
     public void setReference() {
@@ -77,11 +83,12 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public boolean CanMove() {
-        return getPose_Elev() <= 0 && getPose_Elev() >= -53; 
+        return getPose_Elev() <= 0 && getPose_Elev() >= -174; 
     }
 
     public void freeze() {
         double freze = getPose_Elev();
+        freze = MathUtil.clamp(freze, -174, 0);
         setPose_Elev(freze);
     }
 }

@@ -88,8 +88,8 @@ public class RobotContainer {
     );
 
 
-    // m_driverController.rightBumper().whileTrue(new SetPoseElevCommand(-0.3));
-    // m_driverController.leftBumper().whileTrue(new SetPoseElevCommand(0.3));
+    m_driverController.rightBumper().whileTrue(new SetPoseElevCommand(-1));
+    m_driverController.leftBumper().whileTrue(new SetPoseElevCommand(1));
 
 }
    /**
