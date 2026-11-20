@@ -91,6 +91,9 @@ public class RobotContainer {
     m_driverController.rightBumper().whileTrue(new SetPoseElevCommand(-1));
     m_driverController.leftBumper().whileTrue(new SetPoseElevCommand(1));
 
+    m_driverController.povRight().whileTrue(new SetPoseElevCommand(-40));
+
+
 }
    /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

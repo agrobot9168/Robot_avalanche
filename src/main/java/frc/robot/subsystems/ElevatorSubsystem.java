@@ -21,14 +21,14 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     private final RelativeEncoder elevatorEncoder;
 
-    private double kP = 2;
+    private double kP = 2.0;
     private double kD = 0.0;
     private double kI = 0.0;
     private double kV = 12 / 5676.0;
 
-    private static final double maxVelocity = 5600.0;
-    private static final double maxAceleration = 5600 * 2;
-    private static final double aallowedPrrofileError = 0.1;
+    private static final double maxVelocity = 5600.0 / 2;
+    private static final double maxAceleration = 5600 / 2;
+    private static final double aallowedPrrofileError = 0.01;
 
     public ElevatorSubsystem() {
         mElevator = new SparkMax(17, MotorType.kBrushless);
@@ -60,7 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public void setPose_Elev(double pose )  {
-        pose = MathUtil.clamp(pose, -174, 0);
+        pose = MathUtil.clamp(pose, -300, 0);
         pidElevator.setSetpoint(pose, ControlType.kMAXMotionPositionControl);
         
     }
@@ -83,12 +83,12 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public boolean CanMove() {
-        return getPose_Elev() <= 0 && getPose_Elev() >= -174; 
+        return getPose_Elev() <= 0 && getPose_Elev() >= -300; 
     }
 
     public void freeze() {
         double freze = getPose_Elev();
-        freze = MathUtil.clamp(freze, -174, 0);
+        freze = MathUtil.clamp(freze, -300, 0);
         setPose_Elev(freze);
     }
 }

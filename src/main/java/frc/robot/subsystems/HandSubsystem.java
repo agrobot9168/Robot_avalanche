@@ -28,6 +28,7 @@ public class HandSubsystem extends SubsystemBase {
     private final XboxControls controls = new XboxControls();
 
     public double DEADBAND = 0.08;
+    public static double referencia;
 
     private final MotionMagicVoltage controlePosicao = new MotionMagicVoltage(0);
 
@@ -80,6 +81,12 @@ public class HandSubsystem extends SubsystemBase {
         double newAnguloHand = anguloArm/16 - (offsetHand);
         return MathUtil.clamp(newAnguloHand, 0.0, 106.0);
     }
+    public void setPoseHand(double setPose) {
+        setPose = MathUtil.clamp(setPose, 0, 213);
+
+        hand.setControl(
+                controlePosicao.withPosition(setPose));
+    }
 
 
     @Override
@@ -89,19 +96,19 @@ public class HandSubsystem extends SubsystemBase {
 
         double gatilho = XboxControls.Get_RightTriggerAxis();
 
-        double referencia;
-
-        if (ArmSubsystem.getPosition_Arm() > 20 && ArmSubsystem.coleta) {
+        if (ArmSubsystem.getPosition_Arm() > 20 ) {
 
             referencia = estabilizaHand(ArmSubsystem.getPosition_Arm());
+            
 
-        } else {
-
+        } else if(!ArmSubsystem.coleta){
             referencia = 0;
         }
-            hand.setControl(
+
+        hand.setControl(
                 controlePosicao.withPosition(referencia)
             );
+            
         
 
         SmartDashboard.putNumber("POSICAO DA HAND", getPosition_Hand());

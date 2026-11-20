@@ -29,14 +29,22 @@ public class SetPoseElevCommand extends Command{
 
     @Override
     public void execute() {
-        teste = !teste;
 
-        setPose += (UpDown/8);
-        setPose = MathUtil.clamp(setPose, -174, 0);
+        if (UpDown == -1 || UpDown == 1) {
+            setPose += (UpDown/3);
+            setPose = MathUtil.clamp(setPose, -300, 0);
+        } 
+
+        if (UpDown == -40) {
+             m_Elevator.setPose_Elev(UpDown);
+        }
+            
+        
+        
 
         SmartDashboard.putNumber("setPose", setPose);
         
-        if(m_Elevator.CanMove() && ArmSubsystem.L1) {
+        if(m_Elevator.CanMove() && (ArmSubsystem.TL1 || ArmSubsystem.ML1)) {
             m_Elevator.setPose_Elev(setPose);
         } else {
             m_Elevator.freeze();

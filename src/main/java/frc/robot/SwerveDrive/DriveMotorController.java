@@ -107,6 +107,7 @@ public class DriveMotorController {
         config.Slot0.kS = kS;
         config.Slot0.kV = kV;
 
+        
         // Motion Magic
 
         config.MotionMagic.MotionMagicAcceleration =
